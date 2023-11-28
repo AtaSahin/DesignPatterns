@@ -1,65 +1,38 @@
 ﻿using System;
 
-
-interface IProduct
+class Adaptee
 {
-    void Display();
-}
-
-
-class ConcreteProduct1 : IProduct
-{
-    public void Display()
+    public void SpecificRequest()
     {
-        Console.WriteLine("ConcreteProduct1 gösteriliyor....");
+        Console.WriteLine("Request from Adapter");
     }
 }
 
-
-class ConcreteProduct2 : IProduct
+interface ITarget
 {
-    public void Display()
+    void Request();
+}
+
+class Adapter : ITarget
+{
+    private Adaptee adaptee;
+
+    public Adapter(Adaptee adaptee)
     {
-        Console.WriteLine("ConcreteProduct2 is displaying....");
+        this.adaptee = adaptee;
     }
-}
 
-interface IFactory
-{
-    IProduct CreateProduct();
-}
-
-
-class ConcreteFactory1 : IFactory
-{
-    public IProduct CreateProduct()
+    public void Request()
     {
-        return new ConcreteProduct1();
-    }
-}
-
-
-class ConcreteFactory2 : IFactory
-{
-    public IProduct CreateProduct()
-    {
-        return new ConcreteProduct2();
+        adaptee.SpecificRequest();
     }
 }
 
 class Client
 {
-    private IFactory factory;
-
-    public Client(IFactory factory)
+    public void MakeRequest(ITarget target)
     {
-        this.factory = factory;
-    }
-
-    public void Run()
-    {
-        IProduct product = factory.CreateProduct();
-        product.Display();
+        target.Request();
     }
 }
 
@@ -67,15 +40,12 @@ class Program
 {
     static void Main()
     {
+        Adaptee adaptee = new Adaptee();
 
-        IFactory factory1 = new ConcreteFactory1();
-        Client client1 = new Client(factory1);
-        client1.Run();
+        ITarget adapter = new Adapter(adaptee);
 
-
-        IFactory factory2 = new ConcreteFactory2();
-        Client client2 = new Client(factory2);
-        client2.Run();
+        Client client = new Client();
+        client.MakeRequest(adapter);
 
         Console.ReadLine();
     }
