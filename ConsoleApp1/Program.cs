@@ -1,38 +1,42 @@
 ﻿using System;
 
-class Adaptee
-{
-    public void SpecificRequest()
-    {
-        Console.WriteLine("Request from Adapter");
-    }
-}
-
-interface ITarget
+interface ISubject
 {
     void Request();
 }
 
-class Adapter : ITarget
-{
-    private Adaptee adaptee;
 
-    public Adapter(Adaptee adaptee)
+class RealSubject : ISubject
+{
+    public void Request()
     {
-        this.adaptee = adaptee;
+        Console.WriteLine("RealSubject İstek yapılıyor...");
     }
+}
+
+
+class Proxy : ISubject
+{
+    private RealSubject realSubject;
 
     public void Request()
     {
-        adaptee.SpecificRequest();
+
+        if (realSubject == null)
+        {
+            realSubject = new RealSubject();
+        }
+
+
+        realSubject.Request();
     }
 }
 
 class Client
 {
-    public void MakeRequest(ITarget target)
+    public void MakeRequest(ISubject subject)
     {
-        target.Request();
+        subject.Request();
     }
 }
 
@@ -40,12 +44,17 @@ class Program
 {
     static void Main()
     {
-        Adaptee adaptee = new Adaptee();
 
-        ITarget adapter = new Adapter(adaptee);
+        ISubject realSubject = new RealSubject();
+        Client client1 = new Client();
+        client1.MakeRequest(realSubject);
 
-        Client client = new Client();
-        client.MakeRequest(adapter);
+        Console.WriteLine();
+
+
+        ISubject proxy = new Proxy();
+        Client client2 = new Client();
+        client2.MakeRequest(proxy);
 
         Console.ReadLine();
     }
