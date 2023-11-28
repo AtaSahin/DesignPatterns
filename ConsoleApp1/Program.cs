@@ -1,42 +1,70 @@
 ﻿using System;
 
-interface ISubject
+
+interface IHandler
 {
-    void Request();
+    IHandler SetNext(IHandler handler);
+    void HandleRequest(int request);
 }
 
 
-class RealSubject : ISubject
+abstract class Handler : IHandler
 {
-    public void Request()
+    private IHandler nextHandler;
+
+    public IHandler SetNext(IHandler handler)
     {
-        Console.WriteLine("RealSubject İstek yapılıyor...");
+        nextHandler = handler;
+        return handler;
     }
-}
 
-
-class Proxy : ISubject
-{
-    private RealSubject realSubject;
-
-    public void Request()
+    public void HandleRequest(int request)
     {
-
-        if (realSubject == null)
+        if (nextHandler != null)
         {
-            realSubject = new RealSubject();
+            nextHandler.HandleRequest(request);
         }
-
-
-        realSubject.Request();
     }
 }
+
+
+class ConcreteHandler1 : Handler
+{
+    public override void HandleRequest(int request)
+    {
+        if (request >= 0 && request < 10)
+        {
+            Console.WriteLine("ConcreteHandler1 handles the request: " + request);
+        }
+        else if (nextHandler != null)
+        {
+            nextHandler.HandleRequest(request);
+        }
+    }
+}
+
+
+class ConcreteHandler2 : Handler
+{
+    public override void HandleRequest(int request)
+    {
+        if (request >= 10 && request < 20)
+        {
+            Console.WriteLine("ConcreteHandler2 handles the request: " + request);
+        }
+        else if (nextHandler != null)
+        {
+            nextHandler.HandleRequest(request);
+        }
+    }
+}
+
 
 class Client
 {
-    public void MakeRequest(ISubject subject)
+    public void MakeRequest(IHandler handler, int request)
     {
-        subject.Request();
+        handler.HandleRequest(request);
     }
 }
 
@@ -44,17 +72,18 @@ class Program
 {
     static void Main()
     {
-
-        ISubject realSubject = new RealSubject();
-        Client client1 = new Client();
-        client1.MakeRequest(realSubject);
-
-        Console.WriteLine();
+        // Creating handler instances
+        IHandler handler1 = new ConcreteHandler1();
+        IHandler handler2 = new ConcreteHandler2();
 
 
-        ISubject proxy = new Proxy();
-        Client client2 = new Client();
-        client2.MakeRequest(proxy);
+        handler1.SetNext(handler2);
+
+
+        Client client = new Client();
+        client.MakeRequest(handler1, 5);
+        client.MakeRequest(handler1, 15);
+        client.MakeRequest(handler1, 25);
 
         Console.ReadLine();
     }
