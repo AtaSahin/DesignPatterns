@@ -1,70 +1,47 @@
 ﻿using System;
 
 
-interface IHandler
+interface IStrategy
 {
-    IHandler SetNext(IHandler handler);
-    void HandleRequest(int request);
+    void Execute();
 }
 
 
-abstract class Handler : IHandler
+class ConcreteStrategy1 : IStrategy
 {
-    private IHandler nextHandler;
-
-    public IHandler SetNext(IHandler handler)
+    public void Execute()
     {
-        nextHandler = handler;
-        return handler;
-    }
-
-    public void HandleRequest(int request)
-    {
-        if (nextHandler != null)
-        {
-            nextHandler.HandleRequest(request);
-        }
+        Console.WriteLine("Executing ConcreteStrategy1");
     }
 }
 
 
-class ConcreteHandler1 : Handler
+class ConcreteStrategy2 : IStrategy
 {
-    public override void HandleRequest(int request)
+    public void Execute()
     {
-        if (request >= 0 && request < 10)
-        {
-            Console.WriteLine("ConcreteHandler1 handles the request: " + request);
-        }
-        else if (nextHandler != null)
-        {
-            nextHandler.HandleRequest(request);
-        }
+        Console.WriteLine("Executing ConcreteStrategy2");
     }
 }
 
 
-class ConcreteHandler2 : Handler
+class Context
 {
-    public override void HandleRequest(int request)
+    private IStrategy strategy;
+
+    public Context(IStrategy strategy)
     {
-        if (request >= 10 && request < 20)
-        {
-            Console.WriteLine("ConcreteHandler2 handles the request: " + request);
-        }
-        else if (nextHandler != null)
-        {
-            nextHandler.HandleRequest(request);
-        }
+        this.strategy = strategy;
     }
-}
 
-
-class Client
-{
-    public void MakeRequest(IHandler handler, int request)
+    public void SetStrategy(IStrategy strategy)
     {
-        handler.HandleRequest(request);
+        this.strategy = strategy;
+    }
+
+    public void ExecuteStrategy()
+    {
+        strategy.Execute();
     }
 }
 
@@ -72,18 +49,21 @@ class Program
 {
     static void Main()
     {
-        // Creating handler instances
-        IHandler handler1 = new ConcreteHandler1();
-        IHandler handler2 = new ConcreteHandler2();
+
+        IStrategy strategy1 = new ConcreteStrategy1();
+        IStrategy strategy2 = new ConcreteStrategy2();
 
 
-        handler1.SetNext(handler2);
+        Context context = new Context(strategy1);
 
 
-        Client client = new Client();
-        client.MakeRequest(handler1, 5);
-        client.MakeRequest(handler1, 15);
-        client.MakeRequest(handler1, 25);
+        context.ExecuteStrategy();
+
+
+        context.SetStrategy(strategy2);
+
+
+        context.ExecuteStrategy();
 
         Console.ReadLine();
     }
