@@ -12,3 +12,4 @@ C:\Users\90545\Desktop\designPatterns\DesignPatterns\ConsoleApp1\obj\Debug\net8.
 C:\Users\90545\Desktop\designPatterns\DesignPatterns\ConsoleApp1\obj\Debug\net8.0\ConsoleApp1.pdb
 C:\Users\90545\Desktop\designPatterns\DesignPatterns\ConsoleApp1\obj\Debug\net8.0\ConsoleApp1.genruntimeconfig.cache
 C:\Users\90545\Desktop\designPatterns\DesignPatterns\ConsoleApp1\obj\Debug\net8.0\ref\ConsoleApp1.dll
+C:\Users\90545\Desktop\designPatterns\DesignPatterns\ConsoleApp1\obj\Debug\net8.0\ConsoleApp1.sourcelink.json

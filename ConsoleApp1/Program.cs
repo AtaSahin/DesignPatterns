@@ -1,41 +1,65 @@
 ﻿using System;
 
-public sealed class Singleton
+
+interface IProduct
 {
-
-    private static Singleton instance;
-
-
-    private static readonly object lockObject = new object();
+    void Display();
+}
 
 
-    private Singleton()
+class ConcreteProduct1 : IProduct
+{
+    public void Display()
     {
+        Console.WriteLine("ConcreteProduct1 gösteriliyor....");
+    }
+}
+
+
+class ConcreteProduct2 : IProduct
+{
+    public void Display()
+    {
+        Console.WriteLine("ConcreteProduct2 is displaying....");
+    }
+}
+
+interface IFactory
+{
+    IProduct CreateProduct();
+}
+
+
+class ConcreteFactory1 : IFactory
+{
+    public IProduct CreateProduct()
+    {
+        return new ConcreteProduct1();
+    }
+}
+
+
+class ConcreteFactory2 : IFactory
+{
+    public IProduct CreateProduct()
+    {
+        return new ConcreteProduct2();
+    }
+}
+
+class Client
+{
+    private IFactory factory;
+
+    public Client(IFactory factory)
+    {
+        this.factory = factory;
     }
 
-    public static Singleton Instance
+    public void Run()
     {
-        get
-        {
-
-            if (instance == null)
-            {
-                lock (lockObject)
-                {
-                    if (instance == null)
-                    {
-                        instance = new Singleton();
-                    }
-                }
-            }
-            return instance;
-        }
-    }
-
-
-    public void DisplayMessage()
-    {
-        Console.WriteLine("Singleton example usage");
+        IProduct product = factory.CreateProduct();
+        product.Display();
     }
 }
 
@@ -44,19 +68,14 @@ class Program
     static void Main()
     {
 
-        Singleton singletonInstance = Singleton.Instance;
+        IFactory factory1 = new ConcreteFactory1();
+        Client client1 = new Client(factory1);
+        client1.Run();
 
 
-        singletonInstance.DisplayMessage();
-
-
-        Singleton anotherInstance = Singleton.Instance;
-
-
-        if (singletonInstance == anotherInstance)
-        {
-            Console.WriteLine("2 instances are the same time of Singleton class");
-        }
+        IFactory factory2 = new ConcreteFactory2();
+        Client client2 = new Client(factory2);
+        client2.Run();
 
         Console.ReadLine();
     }
